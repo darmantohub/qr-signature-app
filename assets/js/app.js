@@ -53,3 +53,20 @@ function downloadQR() {
   link.href = currentCanvas.toDataURL();
   link.click();
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const urlInput = document.getElementById("urlInput");
+  const signatureInput = document.getElementById("signatureInput");
+
+  [urlInput, signatureInput].forEach((input) => {
+    input.addEventListener("input", function () {
+      const url = urlInput.value.trim();
+      const signature = signatureInput.value.trim();
+
+      if (url || signature) {
+        generateQR();
+      }
+    });
+  });
+});

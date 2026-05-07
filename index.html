@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Signature App</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>QR Generator</h2>
+      <a href="#">Dashboard</a>
+      <a href="#">Buat QR Code</a>
+      <a href="#">Riwayat</a>
+      <a href="#">Pengaturan</a>
+    </aside>
+
+    <main class="content">
+      <h1>Buat QR Code</h1>
+      <p>Buat QR Code untuk URL dan tanda tangan digital.</p>
+
+      <div class="layout">
+        <section class="card form-card">
+          <label>URL Tujuan</label>
+          <input id="urlInput" type="url" placeholder="https://contohwebsite.com" />
+
+          <label>Teks Tanda Tangan</label>
+          <input id="signatureInput" type="text" placeholder="Tanda Tangan" />
+
+          <button onclick="generateQR()">Generate QR Code</button>
+        </section>
+
+        <section class="card preview-card">
+          <h3>Preview QR Code</h3>
+          <div id="qrcode"></div>
+          <p id="signatureText">Tanda Tangan</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

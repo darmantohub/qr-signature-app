@@ -1,6 +1,9 @@
+let currentCanvas = null;
+
 function generateQR() {
   const url = document.getElementById("urlInput").value.trim();
   const signature = document.getElementById("signatureInput").value.trim();
+
   const qrContainer = document.getElementById("qrcode");
   const signatureText = document.getElementById("signatureText");
 
@@ -21,4 +24,20 @@ function generateQR() {
   });
 
   signatureText.innerText = signature || "Tanda Tangan";
+
+  setTimeout(() => {
+    currentCanvas = qrContainer.querySelector("canvas");
+  }, 300);
+}
+
+function downloadQR() {
+  if (!currentCanvas) {
+    alert("Generate QR terlebih dahulu.");
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.download = "qr-signature.png";
+  link.href = currentCanvas.toDataURL();
+  link.click();
 }

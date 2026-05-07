@@ -7,15 +7,27 @@ function generateQR() {
   const qrContainer = document.getElementById("qrcode");
   const signatureText = document.getElementById("signatureText");
 
-  if (!url) {
-    alert("Masukkan URL terlebih dahulu.");
+  if (!url && !signature) {
+    alert("Masukkan URL atau nama tanda tangan terlebih dahulu.");
     return;
+  }
+
+  let qrData = "";
+
+  if (url) {
+    qrData = url;
+  } else {
+    qrData = `
+Nama Penanda Tangan: ${signature}
+Tipe: Tanda Tangan Digital
+Dibuat: ${new Date().toLocaleString()}
+    `;
   }
 
   qrContainer.innerHTML = "";
 
   new QRCode(qrContainer, {
-    text: url,
+    text: qrData,
     width: 260,
     height: 260,
     colorDark: "#000000",

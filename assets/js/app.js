@@ -1,5 +1,28 @@
-
 let currentCanvas = null;
+let historyItems = JSON.parse(localStorage.getItem("qrHistory") || "[]");
+
+function showPage(pageId) {
+  document.querySelectorAll(".page-section").forEach((section) => {
+    section.style.display = "none";
+  });
+
+  document.getElementById(pageId).style.display = "block";
+
+  document.querySelectorAll(".sidebar a").forEach((link) => {
+    link.classList.remove("active");
+  });
+
+  const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+  if (activeLink) activeLink.classList.add("active");
+
+  if (pageId === "historyPage") {
+    renderHistory();
+  }
+
+  if (pageId === "dashboardPage") {
+    renderDashboard();
+  }
+}
 
 function generateQR() {
   const url = document.getElementById("urlInput").value.trim();
@@ -16,19 +39,13 @@ function generateQR() {
     return;
   }
 
-  let qrData = "";
-
-  if (url) {
-    qrData = url;
-  } else {
-    qrData = [
-      `Nama Penanda Tangan: ${signature || "-"}`,
-      `Jabatan: ${position || "-"}`,
-      `Instansi: ${institution || "-"}`,
-      `Keterangan: ${note || "-"}`,
-      `Dibuat: ${new Date().toLocaleString()}`,
-    ].join("\n");
-  }
+  const qrData = url || [
+    `Nama Penanda Tangan: ${signature || "-"}`,
+    `Jabatan: ${position || "-"}`,
+    `Instansi: ${institution || "-"}`,
+    `Keterangan: ${note || "-"}`,
+    `Dibuat: ${new Date().toLocaleString()}`,
+  ].join("\n");
 
   qrContainer.innerHTML = "";
 
@@ -42,6 +59,16 @@ function generateQR() {
   });
 
   signatureText.innerText = signature || "Tanda Tangan";
+
+  const item = {
+    type: url ? "URL" : "Tanda Tangan",
+    title: url || signature || "QR Code",
+    createdAt: new Date().toLocaleString(),
+  };
+
+  historyItems.unshift(item);
+  historyItems = historyItems.slice(0, 10);
+  localStorage.setItem("qrHistory", JSON.stringify(historyItems));
 
   setTimeout(() => {
     currentCanvas = qrContainer.querySelector("canvas");
@@ -60,22 +87,44 @@ function downloadQR() {
   link.click();
 }
 
+function renderHistory() {
+  const box = document.getElementById("historyList");
+
+  if (!historyItems.length) {
+    box.innerHTML = "<p>Belum ada riwayat QR Code.</p>";
+    return;
+  }
+
+  box.innerHTML = historyItems.map((item) => `
+    <div class="history-item">
+      <strong>${item.title}</strong>
+      <span>${item.type} • ${item.createdAt}</span>
+    </div>
+  `).join("");
+}
+
+function renderDashboard() {
+  document.getElementById("totalQr").innerText = historyItems.length;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  const inputs = [
-    document.getElementById("urlInput"),
-    document.getElementById("signatureInput"),
-    document.getElementById("positionInput"),
-    document.getElementById("institutionInput"),
-    document.getElementById("noteInput"),
-  ];
+  document.querySelectorAll(".sidebar a").forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      showPage(this.dataset.page);
+    });
+  });
+
+  const inputs = ["urlInput", "signatureInput", "positionInput", "institutionInput", "noteInput"]
+    .map((id) => document.getElementById(id));
 
   inputs.forEach((input) => {
     input.addEventListener("input", function () {
-      const hasValue = inputs.some((item) => item.value.trim());
-
-      if (hasValue) {
+      if (inputs.some((item) => item.value.trim())) {
         generateQR();
       }
     });
   });
+
+  showPage("dashboardPage");
 });

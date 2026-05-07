@@ -120,3 +120,32 @@ button {
 .secondary-button {
   background: #111827;
 }
+
+.sidebar a.active {
+  background: #4f46e5;
+}
+
+.page-section {
+  display: none;
+}
+
+.big-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: #4f46e5;
+}
+
+.history-item {
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.history-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.history-item span {
+  color: #6b7280;
+  font-size: 14px;
+}

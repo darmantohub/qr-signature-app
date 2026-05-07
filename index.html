@@ -10,51 +10,86 @@
   <div class="app">
     <aside class="sidebar">
       <h2>QR Generator</h2>
-      <a href="#">Dashboard</a>
-      <a href="#">Buat QR Code</a>
-      <a href="#">Riwayat</a>
-      <a href="#">Pengaturan</a>
+      <a href="#" data-page="dashboardPage">Dashboard</a>
+      <a href="#" data-page="qrPage">Buat QR Code</a>
+      <a href="#" data-page="historyPage">Riwayat</a>
+      <a href="#" data-page="settingsPage">Pengaturan</a>
     </aside>
 
-    <main class="content">
-      <h1>Buat QR Code</h1>
-      <p>Buat QR Code untuk URL dan tanda tangan digital.</p>
+    
+<main class="content">
+  <section id="dashboardPage" class="page-section">
+    <h1>Dashboard</h1>
+    <p>Ringkasan penggunaan aplikasi QR Signature.</p>
 
-      <div class="layout">
-        <section class="card form-card">
-          <label>URL Tujuan</label>
-          <input id="urlInput" type="url" placeholder="https://contohwebsite.com" />
+    <div class="layout">
+      <section class="card">
+        <h3>Total QR Dibuat</h3>
+        <div class="big-number" id="totalQr">0</div>
+      </section>
 
-          <label>Nama Penanda Tangan</label>
-          <input id="signatureInput" type="text" placeholder="dr. Darmanto" />
+      <section class="card">
+        <h3>Status Aplikasi</h3>
+        <p>Online dan siap digunakan.</p>
+      </section>
+    </div>
+  </section>
 
-          <label>Jabatan</label>
-          <input id="positionInput" type="text" placeholder="Direktur / Dokter / Admin" />
+  <section id="qrPage" class="page-section">
+    <h1>Buat QR Code</h1>
+    <p>Buat QR Code untuk URL dan tanda tangan digital.</p>
 
-          <label>Instansi</label>
-          <input id="institutionInput" type="text" placeholder="Klinik Hafida" />
+    <div class="layout">
+      <section class="card form-card">
+        <label>URL Tujuan</label>
+        <input id="urlInput" type="url" placeholder="https://contohwebsite.com" />
 
-          <label>Keterangan</label>
-          <input id="noteInput" type="text" placeholder="Dokumen ini ditandatangani secara digital" />
+        <label>Nama Penanda Tangan</label>
+        <input id="signatureInput" type="text" placeholder="dr. Darmanto" />
 
-          
-<button onclick="generateQR()">Generate QR Code</button>
-<button onclick="downloadQR()" style="margin-left:10px;background:#111827;">
-  Download PNG
-</button>
+        <label>Jabatan</label>
+        <input id="positionInput" type="text" placeholder="Direktur / Dokter / Admin" />
 
-        </section>
+        <label>Instansi</label>
+        <input id="institutionInput" type="text" placeholder="Klinik Hafida" />
 
-        <section class="card preview-card">
-          <h3>Preview QR Code</h3>
-          <div id="qrcode"></div>
-          <p id="signatureText">Tanda Tangan</p>
-        </section>
-      </div>
-    </main>
+        <label>Keterangan</label>
+        <input id="noteInput" type="text" placeholder="Dokumen ini ditandatangani secara digital" />
+
+        <div class="button-row">
+          <button onclick="generateQR()">Generate QR Code</button>
+          <button class="secondary-button" onclick="downloadQR()">Download PNG</button>
+        </div>
+      </section>
+
+      <section class="card preview-card">
+        <h3>Preview QR Code</h3>
+        <div id="qrcode"></div>
+        <p id="signatureText">Tanda Tangan</p>
+      </section>
+    </div>
+  </section>
+
+  <section id="historyPage" class="page-section">
+    <h1>Riwayat</h1>
+    <p>Riwayat QR Code yang dibuat di browser ini.</p>
+    <section class="card" id="historyList"></section>
+  </section>
+
+  <section id="settingsPage" class="page-section">
+    <h1>Pengaturan</h1>
+    <p>Pengaturan aplikasi QR Signature.</p>
+
+    <section class="card">
+      <h3>Versi Aplikasi</h3>
+      <p>QR Signature App v1.0</p>
+    </section>
+  </section>
+</main>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/app.js?v=6"></script>
 </body>
 </html>

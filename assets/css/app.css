@@ -110,3 +110,13 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.secondary-button {
+  background: #111827;
+}

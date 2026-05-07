@@ -1,14 +1,18 @@
+
 let currentCanvas = null;
 
 function generateQR() {
   const url = document.getElementById("urlInput").value.trim();
   const signature = document.getElementById("signatureInput").value.trim();
+  const position = document.getElementById("positionInput").value.trim();
+  const institution = document.getElementById("institutionInput").value.trim();
+  const note = document.getElementById("noteInput").value.trim();
 
   const qrContainer = document.getElementById("qrcode");
   const signatureText = document.getElementById("signatureText");
 
-  if (!url && !signature) {
-    alert("Masukkan URL atau nama tanda tangan terlebih dahulu.");
+  if (!url && !signature && !position && !institution && !note) {
+    alert("Masukkan URL atau data tanda tangan terlebih dahulu.");
     return;
   }
 
@@ -17,11 +21,13 @@ function generateQR() {
   if (url) {
     qrData = url;
   } else {
-    qrData = `
-Nama Penanda Tangan: ${signature}
-Tipe: Tanda Tangan Digital
-Dibuat: ${new Date().toLocaleString()}
-    `;
+    qrData = [
+      `Nama Penanda Tangan: ${signature || "-"}`,
+      `Jabatan: ${position || "-"}`,
+      `Instansi: ${institution || "-"}`,
+      `Keterangan: ${note || "-"}`,
+      `Dibuat: ${new Date().toLocaleString()}`,
+    ].join("\n");
   }
 
   qrContainer.innerHTML = "";
@@ -54,17 +60,20 @@ function downloadQR() {
   link.click();
 }
 
-
 document.addEventListener("DOMContentLoaded", function () {
-  const urlInput = document.getElementById("urlInput");
-  const signatureInput = document.getElementById("signatureInput");
+  const inputs = [
+    document.getElementById("urlInput"),
+    document.getElementById("signatureInput"),
+    document.getElementById("positionInput"),
+    document.getElementById("institutionInput"),
+    document.getElementById("noteInput"),
+  ];
 
-  [urlInput, signatureInput].forEach((input) => {
+  inputs.forEach((input) => {
     input.addEventListener("input", function () {
-      const url = urlInput.value.trim();
-      const signature = signatureInput.value.trim();
+      const hasValue = inputs.some((item) => item.value.trim());
 
-      if (url || signature) {
+      if (hasValue) {
         generateQR();
       }
     });

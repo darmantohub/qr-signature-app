@@ -25,8 +25,17 @@
           <label>URL Tujuan</label>
           <input id="urlInput" type="url" placeholder="https://contohwebsite.com" />
 
-          <label>Teks Tanda Tangan</label>
-          <input id="signatureInput" type="text" placeholder="Tanda Tangan" />
+          <label>Nama Penanda Tangan</label>
+          <input id="signatureInput" type="text" placeholder="dr. Darmanto" />
+
+          <label>Jabatan</label>
+          <input id="positionInput" type="text" placeholder="Direktur / Dokter / Admin" />
+
+          <label>Instansi</label>
+          <input id="institutionInput" type="text" placeholder="Klinik Hafida" />
+
+          <label>Keterangan</label>
+          <input id="noteInput" type="text" placeholder="Dokumen ini ditandatangani secara digital" />
 
           
 <button onclick="generateQR()">Generate QR Code</button>
@@ -46,6 +55,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script src="assets/js/app.js?v=4"></script>
+  <script src="assets/js/app.js?v=5"></script>
 </body>
 </html>

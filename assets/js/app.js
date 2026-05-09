@@ -2,21 +2,25 @@ let currentCanvas = null;
 let historyItems = JSON.parse(localStorage.getItem("qrHistory") || "[]");
 
 function showPage(pageId) {
-  document.querySelectorAll(".page-section").forEach((section) => {
-    section.style.display = "none";
-  });
-
+  document.querySelectorAll(".page-section").forEach((section) => section.style.display = "none");
   document.getElementById(pageId).style.display = "block";
 
-  document.querySelectorAll(".sidebar a").forEach((link) => {
-    link.classList.remove("active");
-  });
-
+  document.querySelectorAll(".sidebar a").forEach((link) => link.classList.remove("active"));
   const activeLink = document.querySelector(`[data-page="${pageId}"]`);
   if (activeLink) activeLink.classList.add("active");
 
   if (pageId === "historyPage") renderHistory();
   if (pageId === "dashboardPage") renderDashboard();
+}
+
+function buildQRData(url, signature, position, institution, note) {
+  return url || [
+    `Nama Penanda Tangan: ${signature || "-"}`,
+    `Jabatan: ${position || "-"}`,
+    `Instansi: ${institution || "-"}`,
+    `Keterangan: ${note || "-"}`,
+    `Dibuat: ${new Date().toLocaleString()}`,
+  ].join("\n");
 }
 
 function generateQR(saveToHistory = true) {
@@ -26,20 +30,29 @@ function generateQR(saveToHistory = true) {
   const institution = document.getElementById("institutionInput").value.trim();
   const note = document.getElementById("noteInput").value.trim();
 
+  if (!url && !signature && !position && !institution && !note) return;
+
+  const qrData = buildQRData(url, signature, position, institution, note);
+  drawQR(qrData, signature || "Tanda Tangan");
+
+  if (saveToHistory) {
+    historyItems.unshift({
+      type: url ? "URL" : "Tanda Tangan",
+      title: url || signature || "QR Code",
+      qrData: qrData,
+      signature: signature || "Tanda Tangan",
+      createdAt: new Date().toLocaleString(),
+    });
+
+    historyItems = historyItems.slice(0, 10);
+    localStorage.setItem("qrHistory", JSON.stringify(historyItems));
+    renderDashboard();
+  }
+}
+
+function drawQR(qrData, signatureTextValue) {
   const qrContainer = document.getElementById("qrcode");
   const signatureText = document.getElementById("signatureText");
-
-  if (!url && !signature && !position && !institution && !note) {
-    return;
-  }
-
-  const qrData = url || [
-    `Nama Penanda Tangan: ${signature || "-"}`,
-    `Jabatan: ${position || "-"}`,
-    `Instansi: ${institution || "-"}`,
-    `Keterangan: ${note || "-"}`,
-    `Dibuat: ${new Date().toLocaleString()}`,
-  ].join("\n");
 
   qrContainer.innerHTML = "";
 
@@ -52,22 +65,7 @@ function generateQR(saveToHistory = true) {
     correctLevel: QRCode.CorrectLevel.H,
   });
 
-  signatureText.innerText = signature || "Tanda Tangan";
-
-  if (saveToHistory) {
-    const item = {
-      type: url ? "URL" : "Tanda Tangan",
-      title: url || signature || "QR Code",
-      qrData: qrData,
-      signature: signature || "Tanda Tangan",
-      createdAt: new Date().toLocaleString(),
-    };
-
-    historyItems.unshift(item);
-    historyItems = historyItems.slice(0, 10);
-    localStorage.setItem("qrHistory", JSON.stringify(historyItems));
-    renderDashboard();
-  }
+  signatureText.innerText = signatureTextValue || "Tanda Tangan";
 
   setTimeout(() => {
     currentCanvas = qrContainer.querySelector("canvas");
@@ -108,32 +106,12 @@ function renderHistory() {
   `).join("");
 }
 
-
 function viewHistory(index) {
   const item = historyItems[index];
   if (!item) return;
 
   showPage("qrPage");
-
-  const qrContainer = document.getElementById("qrcode");
-  const signatureText = document.getElementById("signatureText");
-
-  qrContainer.innerHTML = "";
-
-  new QRCode(qrContainer, {
-    text: item.qrData || item.title,
-    width: 260,
-    height: 260,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H,
-  });
-
-  signatureText.innerText = item.signature || item.title || "Tanda Tangan";
-
-  setTimeout(() => {
-    currentCanvas = qrContainer.querySelector("canvas");
-  }, 300);
+  drawQR(item.qrData || item.title, item.signature || item.title || "Tanda Tangan");
 }
 
 function deleteHistory(index) {
@@ -146,7 +124,8 @@ function deleteHistory(index) {
 }
 
 function renderDashboard() {
-  document.getElementById("totalQr").innerText = historyItems.length;
+  const totalQr = document.getElementById("totalQr");
+  if (totalQr) totalQr.innerText = historyItems.length;
 }
 
 document.addEventListener("DOMContentLoaded", function () {

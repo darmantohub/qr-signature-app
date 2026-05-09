@@ -19,7 +19,7 @@ function showPage(pageId) {
   if (pageId === "dashboardPage") renderDashboard();
 }
 
-function generateQR() {
+function generateQR(saveToHistory = true) {
   const url = document.getElementById("urlInput").value.trim();
   const signature = document.getElementById("signatureInput").value.trim();
   const position = document.getElementById("positionInput").value.trim();
@@ -54,15 +54,18 @@ function generateQR() {
 
   signatureText.innerText = signature || "Tanda Tangan";
 
-  const item = {
-    type: url ? "URL" : "Tanda Tangan",
-    title: url || signature || "QR Code",
-    createdAt: new Date().toLocaleString(),
-  };
+  if (saveToHistory) {
+    const item = {
+      type: url ? "URL" : "Tanda Tangan",
+      title: url || signature || "QR Code",
+      createdAt: new Date().toLocaleString(),
+    };
 
-  historyItems.unshift(item);
-  historyItems = historyItems.slice(0, 10);
-  localStorage.setItem("qrHistory", JSON.stringify(historyItems));
+    historyItems.unshift(item);
+    historyItems = historyItems.slice(0, 10);
+    localStorage.setItem("qrHistory", JSON.stringify(historyItems));
+    renderDashboard();
+  }
 
   setTimeout(() => {
     currentCanvas = qrContainer.querySelector("canvas");
@@ -127,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
   inputs.forEach((input) => {
     input.addEventListener("input", function () {
       if (inputs.some((item) => item.value.trim())) {
-        generateQR();
+        generateQR(false);
       }
     });
   });

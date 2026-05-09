@@ -15,13 +15,8 @@ function showPage(pageId) {
   const activeLink = document.querySelector(`[data-page="${pageId}"]`);
   if (activeLink) activeLink.classList.add("active");
 
-  if (pageId === "historyPage") {
-    renderHistory();
-  }
-
-  if (pageId === "dashboardPage") {
-    renderDashboard();
-  }
+  if (pageId === "historyPage") renderHistory();
+  if (pageId === "dashboardPage") renderDashboard();
 }
 
 function generateQR() {
@@ -35,7 +30,6 @@ function generateQR() {
   const signatureText = document.getElementById("signatureText");
 
   if (!url && !signature && !position && !institution && !note) {
-    alert("Masukkan URL atau data tanda tangan terlebih dahulu.");
     return;
   }
 

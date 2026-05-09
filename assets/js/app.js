@@ -58,6 +58,8 @@ function generateQR(saveToHistory = true) {
     const item = {
       type: url ? "URL" : "Tanda Tangan",
       title: url || signature || "QR Code",
+      qrData: qrData,
+      signature: signature || "Tanda Tangan",
       createdAt: new Date().toLocaleString(),
     };
 
@@ -98,9 +100,40 @@ function renderHistory() {
         <strong>${item.title}</strong>
         <span>${item.type} • ${item.createdAt}</span>
       </div>
-      <button class="danger-button" onclick="deleteHistory(${index})">Hapus</button>
+      <div class="history-actions">
+        <button class="view-button" onclick="viewHistory(${index})">View</button>
+        <button class="danger-button" onclick="deleteHistory(${index})">Hapus</button>
+      </div>
     </div>
   `).join("");
+}
+
+
+function viewHistory(index) {
+  const item = historyItems[index];
+  if (!item) return;
+
+  showPage("qrPage");
+
+  const qrContainer = document.getElementById("qrcode");
+  const signatureText = document.getElementById("signatureText");
+
+  qrContainer.innerHTML = "";
+
+  new QRCode(qrContainer, {
+    text: item.qrData || item.title,
+    width: 260,
+    height: 260,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H,
+  });
+
+  signatureText.innerText = item.signature || item.title || "Tanda Tangan";
+
+  setTimeout(() => {
+    currentCanvas = qrContainer.querySelector("canvas");
+  }, 300);
 }
 
 function deleteHistory(index) {

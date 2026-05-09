@@ -95,12 +95,24 @@ function renderHistory() {
     return;
   }
 
-  box.innerHTML = historyItems.map((item) => `
+  box.innerHTML = historyItems.map((item, index) => `
     <div class="history-item">
-      <strong>${item.title}</strong>
-      <span>${item.type} • ${item.createdAt}</span>
+      <div>
+        <strong>${item.title}</strong>
+        <span>${item.type} • ${item.createdAt}</span>
+      </div>
+      <button class="danger-button" onclick="deleteHistory(${index})">Hapus</button>
     </div>
   `).join("");
+}
+
+function deleteHistory(index) {
+  if (!confirm("Hapus riwayat QR ini?")) return;
+
+  historyItems.splice(index, 1);
+  localStorage.setItem("qrHistory", JSON.stringify(historyItems));
+  renderHistory();
+  renderDashboard();
 }
 
 function renderDashboard() {
